@@ -9,11 +9,26 @@
 
 const {onRequest} = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
+const functions = require("firebase-functions")
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+const express = require('express')
+const webApp = express()
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+webApp.use(express.urlencoded({ extended: true }))
+webApp.use(express.json())
+
+const key = "tib4972"
+webApp.get('/auth/:key', (req, res) => {
+    if (req.params.key == key) {
+        res.send("success")
+    } else {
+        res.status(403).send("forbidden")
+    }
+})
+
+webApp.get('/',(req, res) => {
+    res.send("hello, world!")
+})
+
+exports.webApp = functions.https.onRequest(webApp);
+
